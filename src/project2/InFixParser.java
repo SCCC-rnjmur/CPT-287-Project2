@@ -71,8 +71,8 @@ public class InFixParser {
 			if (Pattern.matches("\\d", infix_trim_space.subSequence(i, i+1))) {
 				if (!opers.equals("")) {
 					if (!infixOpersStack.isEmpty()) {
-						while (precedence.get(opers) < precedence.get(infixOpersStack.peek()) &&
-								(precedence.get(opers) != 0)) {
+						while ((precedence.get(opers) < precedence.get(infixOpersStack.peek())) &&
+								precedence.get(opers) != 0) {
 							String doOper = infixOpersStack.pop();
 							int value = doCalculation(doOper, infixDigitsStack.pop(), 
 									infixDigitsStack.pop());
@@ -106,15 +106,16 @@ public class InFixParser {
 					while (!doOper.equals("(")) {
 						value = doCalculation(doOper, infixDigitsStack.pop(), 
 								infixDigitsStack.pop());
+						if (infixOpersStack.isEmpty()) { break; }
 						doOper = infixOpersStack.pop();
+						infixDigitsStack.push(String.valueOf(value));
 					}
-					infixDigitsStack.push(String.valueOf(value));
 				} 
 				else if (String.valueOf(infix_trim_space.charAt(i)).equals("(")) {
 					if (opers != "") {
 						infixOpersStack.push(opers);
 						opers = String.valueOf(infix_trim_space.charAt(i));
-					}
+					} else { infixOpersStack.push(String.valueOf(infix_trim_space.charAt(i))); }
 				}
 				else {
 					opers = opers.concat(String.valueOf(infix_trim_space.charAt(i)));
